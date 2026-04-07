@@ -19,11 +19,18 @@ class Estimation extends Model
         'total_base_cost',
         'total_additional_cost',
         'grand_total',
+        'status',
     ];
 
     // Relasi ke User
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    // Relasi ke Actual Material
+    public function actualMaterials()
+    {
+        return $this->hasMany(ActualMaterial::class);
     }
 }
