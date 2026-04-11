@@ -1,70 +1,158 @@
 <x-admin-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Pengguna: ') . $user->name }}
-        </h2>
+        <div class="flex flex-col md:flex-row justify-between md:items-end gap-6 border-b border-slate-200 pb-6"
+            data-aos="fade-down" data-aos-duration="600">
+            <div>
+                <nav class="flex text-sm text-slate-500 mb-3" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-2">
+                        <li class="inline-flex items-center">
+                            <a href="{{ route('admin.dashboard') }}"
+                                class="text-slate-400 hover:text-slate-600 font-medium transition">Admin Panel</a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <a href="{{ route('admin.users.index') }}"
+                                    class="ml-2 text-slate-400 hover:text-slate-600 font-medium transition">Pengguna</a>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="ml-2 text-emerald-600 font-semibold">Ubah Data</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Update Akun: <span class="text-emerald-600">{{ $user->username }}</span>
+                </h2>
+                <p class="text-sm text-slate-500 mt-1 font-medium max-w-2xl">Perbarui profil, hak akses, atau atur ulang
+                    kata sandi pengguna ini.</p>
+            </div>
+
+            <div>
+                <a href="{{ route('admin.users.index') }}"
+                    class="inline-flex items-center gap-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 px-5 py-2.5 rounded-lg shadow-sm text-sm font-semibold transition">
+                    &larr; Batal & Kembali
+                </a>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg max-w-2xl">
-                <div class="p-6 text-gray-900">
-                    <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
+    <div class="pb-12 pt-6 min-h-screen">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" data-aos="fade-up"
+                data-aos-delay="100">
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                            <input type="text" name="name" value="{{ old('name', $user->name) }}"
-                                class="border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required>
-                            @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                <div class="bg-blue-50 border-b border-blue-100 p-5 flex items-start gap-4">
+                    <svg class="w-6 h-6 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="text-sm font-bold text-blue-900">Petunjuk Pembaruan</h4>
+                        <p class="text-sm text-blue-700 mt-1">Mengubah Hak Akses (Role) akan berdampak langsung pada
+                            menu yang dapat dilihat oleh pengguna ini. Kosongkan kolom password jika Anda tidak ingin
+                            mengubah sandi lama.</p>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ route('admin.users.update', $user->id) }}" class="p-6 sm:p-8 space-y-6">
+                    @csrf
+                    @method('PATCH')
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <x-input-label for="name" :value="__('Nama Lengkap')"
+                                class="text-sm font-semibold text-slate-700 mb-1.5" />
+                            <x-text-input id="name" name="name" type="text"
+                                class="block w-full px-4 py-2.5 bg-white border-slate-300 text-slate-900 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                                :value="old('name', $user->name)" required autofocus />
+                            <x-input-error class="mt-2 text-xs font-bold" :messages="$errors->get('name')" />
                         </div>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                            <input type="text" name="username" value="{{ old('username', $user->username) }}"
-                                class="border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required>
-                            @error('username') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        <div>
+                            <x-input-label for="username" :value="__('Username')"
+                                class="text-sm font-semibold text-slate-700 mb-1.5" />
+                            <x-text-input id="username" name="username" type="text"
+                                class="block w-full px-4 py-2.5 bg-white border-slate-300 text-slate-900 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm bg-slate-50"
+                                :value="old('username', $user->username)" required readonly
+                                title="Username tidak bisa diubah" />
+                            <x-input-error class="mt-2 text-xs font-bold" :messages="$errors->get('username')" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <x-input-label for="email" :value="__('Alamat Email')"
+                                class="text-sm font-semibold text-slate-700 mb-1.5" />
+                            <x-text-input id="email" name="email" type="email"
+                                class="block w-full px-4 py-2.5 bg-white border-slate-300 text-slate-900 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                                :value="old('email', $user->email)" required />
+                            <x-input-error class="mt-2 text-xs font-bold" :messages="$errors->get('email')" />
                         </div>
 
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                            <input type="email" name="email" value="{{ old('email', $user->email) }}"
-                                class="border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required>
-                            @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Role Pengguna</label>
-                            <select name="role"
-                                class="border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5" required>
-                                <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>User
-                                    Biasa</option>
+                        <div>
+                            <x-input-label for="role" :value="__('Tingkat Akses (Role)')"
+                                class="text-sm font-semibold text-slate-700 mb-1.5" />
+                            <select id="role" name="role"
+                                class="block w-full px-4 py-2.5 bg-white border border-slate-300 text-slate-900 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm shadow-sm"
+                                required>
+                                <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>Pengguna
+                                    Biasa (User)</option>
                                 <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>
                                     Administrator</option>
                             </select>
-                            @error('role') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <x-input-error class="mt-2 text-xs font-bold" :messages="$errors->get('role')" />
                         </div>
+                    </div>
 
-                        <div class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru (Opsional)</label>
-                            <input type="password" name="password"
-                                class="border border-gray-300 text-gray-900 text-sm rounded-lg w-full p-2.5"
-                                placeholder="Kosongkan jika tidak ingin mengubah password">
-                            <p class="text-xs text-gray-500 mt-1">Hanya isi jika Anda ingin mereset password akun ini.
-                            </p>
-                            @error('password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-xl border border-slate-200 mt-2">
+                        <div>
+                            <x-input-label for="password" :value="__('Password Baru (Opsional)')"
+                                class="text-sm font-semibold text-slate-700 mb-1.5" />
+                            <x-text-input id="password" name="password" type="password"
+                                class="block w-full px-4 py-2.5 bg-white border-slate-300 text-slate-900 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                                placeholder="Biarkan kosong jika tetap" />
+                            <x-input-error class="mt-2 text-xs font-bold" :messages="$errors->get('password')" />
                         </div>
+                        <div>
+                            <x-input-label for="password_confirmation" :value="__('Konfirmasi Password Baru')"
+                                class="text-sm font-semibold text-slate-700 mb-1.5" />
+                            <x-text-input id="password_confirmation" name="password_confirmation" type="password"
+                                class="block w-full px-4 py-2.5 bg-white border-slate-300 text-slate-900 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
+                                placeholder="Ulangi sandi baru" />
+                        </div>
+                    </div>
 
-                        <div class="flex items-center justify-end gap-4">
-                            <a href="{{ route('admin.users.index') }}"
-                                class="text-sm text-gray-600 hover:text-gray-900">Batal</a>
-                            <button type="submit"
-                                class="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold text-xs uppercase hover:bg-blue-700">Update
-                                Pengguna</button>
+                    <div class="pt-6 mt-6 border-t border-slate-200 flex items-center justify-between">
+                        <div class="text-xs text-slate-500">
+                            Terdaftar pada: <span
+                                class="font-semibold text-slate-700">{{ $user->created_at->format('d M Y') }}</span>
                         </div>
-                    </form>
-                </div>
+                        <button type="submit"
+                            class="bg-slate-900 hover:bg-slate-800 text-white px-6 py-2.5 rounded-lg shadow-sm text-sm font-semibold transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4">
+                                </path>
+                            </svg>
+                            Simpan Perubahan
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
